@@ -1,0 +1,30 @@
+def rnn(x_train, y_train, x_test, y_test, inp_shape):
+    verbose, epochs, batch_size = 1, 10, 50 
+    
+    
+    N = returns.shape[1]
+    D = returns.shape[0]
+    dur = 100
+
+    hidden_size = int(2/3 * (N*dur))
+    
+
+    model = models.Sequential()
+
+  
+    model.add(layers.LSTM(hidden_size,return_sequences=True, activation='relu',kernel_initializer='he_normal', input_shape=inp_shape))
+    model.add(layers.Dropout(0.2))
+    model.add(layers.LSTM(hidden_size,dropout=0.2))
+    model.add(layers.Dense(N, activation='relu',kernel_initializer='he_normal'))
+
+    model.compile(optimizer='adam', loss='mse', metrics=['mse','mae'])
+    # fitting the model
+    history_rnn = model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, verbose=verbose, validation_data=(x_test, y_test))
+    # evaluate the model
+    mse,mse2,mae = model.evaluate(x_test, y_test, batch_size=batch_size, verbose=verbose)
+    
+    print(mse)
+    print(mse2)
+    print(mae)
+    
+    return model,history_rnn
